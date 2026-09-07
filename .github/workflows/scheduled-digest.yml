@@ -1,0 +1,29 @@
+name: Daily Sustainability Digest
+
+on:
+  schedule:
+    - cron: " 0 11 * * 5"
+  workflow_dispatch:
+
+jobs:
+  run-digest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22.22.0"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run the news digest
+        run: node src/index.ts
+        env:
+          G_NEWS_API_KEY: ${{ secrets.G_NEWS_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
